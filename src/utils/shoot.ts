@@ -81,13 +81,11 @@ class Shoot extends Stage {
     this.bullet = new Bullet({
       x,
       y,
+      vx: Math.random() * 2 - 1,
+      vy: Math.random() * 2 - 1,
+      vz: Math.random() * -50,
       context: this.context,
     });
-    setTimeout(() => {
-      if (this.bullet) {
-        this.bullet = undefined;
-      }
-    }, 100);
   }
 
   renderBirds() {
