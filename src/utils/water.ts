@@ -15,7 +15,12 @@ class Water {
   band = 0;
   balls: Array<Ball> = [];
 
-  constructor({ id, width = 600, height = 300, pointsCount = 100 }: InitParams) {
+  constructor({
+    id,
+    width = 600,
+    height = 300,
+    pointsCount = 100,
+  }: InitParams) {
     if (!id) throw Error('id can not be null');
     this.canvas = document.createElement('canvas');
     const context = this.canvas.getContext('2d');
@@ -52,20 +57,22 @@ class Water {
   handleClick(e: MouseEvent) {
     const x = e.offsetX;
     const y = e.offsetY;
-    this.balls.push(
-      new Ball({
-        x,
-        y,
-        radius: Math.random() * 5 + 5,
-        water: this,
-      })
-    );
+    if (y < this.waterHorizon) {
+      this.balls.push(
+        new Ball({
+          x,
+          y,
+          radius: Math.random() * 5 + 5,
+          water: this,
+        })
+      );
+    }
   }
 
-  handleBall(ball: Ball) {
+  handleBallCollision(ball: Ball) {
     const x = ball.x;
     const index = Math.round(x / this.band);
-    this.points[index].vy = ball.vy * ball.radius / 20;
+    this.points[index].vy = (ball.vy * ball.radius) / 20;
     this.points[index].sourcePoints = this.points[index];
   }
 
@@ -188,7 +195,7 @@ class Ball {
     this.vy *= 0.3;
     this.y += this.vy;
     if (this.y > this.water.waterHorizon) {
-      this.water.handleBall(this);
+      this.water.handleBallCollision(this);
     }
   }
 
