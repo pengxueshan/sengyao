@@ -1,34 +1,15 @@
+import Stage, { StageInitParams } from './stage';
 import Bullet from './bullet';
 import Bird from './bird';
 
-interface InitParams {
-  id: string;
-  width?: number;
-  height?: number;
-}
-
-class Shoot {
-  container: HTMLDivElement;
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
+class Shoot extends Stage {
   birds: Array<Bird | null>;
   birdsCount = 3;
   bullet: Bullet | undefined;
 
-  constructor({ id, width = 600, height = 300 }: InitParams) {
-    if (!id) throw Error('id can not be null');
-    this.canvas = document.createElement('canvas');
-    const context = this.canvas.getContext('2d');
-    if (!context) throw Error('can not found 2d context');
-    this.context = context;
-    this.canvas.width = width;
-    this.canvas.height = height;
-    const container = document.querySelector('#' + id) as HTMLDivElement;
-    if (!container) throw Error('can not found container');
-    this.container = container;
-    this.container.replaceChildren(this.canvas);
+  constructor(params: StageInitParams) {
+    super(params);
     this.birds = [];
-
     this.init();
   }
 
@@ -122,11 +103,7 @@ class Shoot {
     }
   }
 
-  render() {
-    window.requestAnimationFrame(() => {
-      this.render();
-    });
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  renderStage() {
     this.context.save();
     this.context.globalCompositeOperation = 'xor';
     this.renderBirds();

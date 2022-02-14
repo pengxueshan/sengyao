@@ -1,3 +1,5 @@
+import Stage from './stage';
+
 interface InitParams {
   id: string;
   width?: number;
@@ -5,33 +7,15 @@ interface InitParams {
   pointsCount?: number;
 }
 
-class Water {
-  container: HTMLDivElement;
-  canvas: HTMLCanvasElement;
-  context: CanvasRenderingContext2D;
+class Water extends Stage {
   pointsCount: number;
   points: Array<Point> = [];
   waterHorizon: number = 0;
   band = 0;
   balls: Array<Ball> = [];
 
-  constructor({
-    id,
-    width = 600,
-    height = 300,
-    pointsCount = 100,
-  }: InitParams) {
-    if (!id) throw Error('id can not be null');
-    this.canvas = document.createElement('canvas');
-    const context = this.canvas.getContext('2d');
-    if (!context) throw Error('can not found 2d context');
-    this.context = context;
-    this.canvas.width = width;
-    this.canvas.height = height;
-    const container = document.querySelector('#' + id) as HTMLDivElement;
-    if (!container) throw Error('can not found container');
-    this.container = container;
-    this.container.replaceChildren(this.canvas);
+  constructor({ pointsCount = 100, ...params }: InitParams) {
+    super(params);
     this.pointsCount = pointsCount;
     this.init();
   }
@@ -82,12 +66,8 @@ class Water {
     });
   }
 
-  render() {
-    window.requestAnimationFrame(() => {
-      this.render();
-    });
+  renderStage() {
     this.check();
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // render balls
     this.balls.forEach((b) => b.render(this.context));
     // render water
